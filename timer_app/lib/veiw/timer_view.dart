@@ -17,18 +17,48 @@ class _TimerViewState extends State<TimerView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(
-            child: CupertinoTimerPicker(
-              backgroundColor: Colors.black,
-              mode: CupertinoTimerPickerMode.hms,
-              onTimerDurationChanged: (Duration newDuration) {},
-            ),
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            renderTimer(),
+            const SizedBox(height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.grey.shade900,
+                  child: CupertinoButton(
+                      child: Text('취소', style: TextStyle(color: Colors.black54),), onPressed: (){}),
+                ),
+                CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.green.shade700..opacity,
+                  child: CupertinoButton(
+                      child: Text('시작', style: TextStyle(color: Colors.green.shade900),), onPressed: (){}),
+                ),
+
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget renderTimer(){
+    return Center(
+      child: CupertinoTheme(
+        data: CupertinoThemeData(
+            brightness: Brightness.dark
+        ),
+        child: CupertinoTimerPicker(
+          mode: CupertinoTimerPickerMode.hms,
+          onTimerDurationChanged: (Duration newDuration) {},
+        ),
       ),
     );
   }
