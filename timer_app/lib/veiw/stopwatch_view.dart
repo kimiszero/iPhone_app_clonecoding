@@ -17,8 +17,18 @@ class _StopWatchViewState extends State<StopWatchView> {
   //Timer
   late Timer _timer;
 
+  //The value which will be check the state for start
+  bool isStarted = false;
+
+  //The value for buttons
+  String leftBtn = '랩';
+  String rightBtn = '시작';
+
   //The result which will be displayed on the screen
   String _result = '00:00:00';
+
+  //The list which will be recorded the results;
+  List<String> _results = [];
 
   // function will be called when the user presses the StartButton
   void _start() {
@@ -33,8 +43,9 @@ class _StopWatchViewState extends State<StopWatchView> {
     });
     //Start the stopwatch
     _stopWatch.start();
-    isStarted=true;
-    rightBtn='중단';
+    isStarted = true;
+    rightBtn = '중단';
+    leftBtn = '랩';
   }
 
   // This function will be called when the user presses the Stop Button
@@ -42,8 +53,9 @@ class _StopWatchViewState extends State<StopWatchView> {
     _timer.cancel();
     _stopWatch.stop();
     setState(() {
-      isStarted=false;
-      rightBtn='시작';
+      isStarted = false;
+      rightBtn = '시작';
+      leftBtn = '재설정';
     });
   }
 
@@ -54,17 +66,19 @@ class _StopWatchViewState extends State<StopWatchView> {
 
     //Update the UI
     setState(() {
+      leftBtn = '랩';
       _result = '00:00:00';
+      _results=[];
     });
   }
 
-  bool isStarted = false;
-  int ms = 0;
-  int sec = 0;
-  int min = 0;
+  //This function will be record when the user presses the Lap button
+  void _laps() {
+    _results.add(_result);
 
-  String leftBtn = '랩';
-  String rightBtn = '시작';
+    //Update the UI
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -81,6 +95,7 @@ class _StopWatchViewState extends State<StopWatchView> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SizedBox(height: 180),
             Center(
                 child: Text(
               // '${min.toString().padLeft(2, '0')}:${sec.toString().padLeft(2, '0')}:${ms.toString().padLeft(2, '0')}',
@@ -98,27 +113,12 @@ class _StopWatchViewState extends State<StopWatchView> {
                   radius: 40,
                   backgroundColor: Colors.grey.shade900,
                   child: CupertinoButton(
-                      child: Text(
-                        leftBtn,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                      onPressed: _reset,
-                      //onPressed: () {
-                        // _stopWatch.stop();
-                        // setState(() {
-                        //   if (isStarted == true) {
-                        //     //TODO 랩
-                        //   } else {
-                        //     //TODO 초기화
-                        //     isStarted = false;
-                        //
-                        //     min = 0;
-                        //     sec = 0;
-                        //     ms = 0;
-                        //   }
-                        // });
-                      //}
+                    child: Text(
+                      leftBtn,
+                      style: const TextStyle(color: Colors.white),
                     ),
+                    onPressed: isStarted ? _laps : _reset,
+                  ),
                 ),
                 CircleAvatar(
                   radius: 40,
@@ -129,39 +129,49 @@ class _StopWatchViewState extends State<StopWatchView> {
                       rightBtn,
                       style: const TextStyle(color: Colors.white),
                     ),
-                    onPressed: isStarted? _stop:_start,
-                    // setState(() {
-                    //   isStarted = !isStarted;
-                    //   if (isStarted) {
-                    //     rightBtn = '중단';
-                    //     leftBtn = '랩';
-                    //     Timer.periodic(const Duration(milliseconds: 1), (timer) {
-                    //       int temp= timer.tick;
-                    //       ms=temp;
-                    //       if(ms>59){
-                    //         sec+=temp~/60;
-                    //         ms=temp%(60*sec);
-                    //       }else if(sec>59){
-                    //         min+=sec~/60;
-                    //         sec=temp%(60*min);
-                    //         ms=temp%(60*min);
-                    //       }
-                    //     });
-                    //   } else {
-                    //     rightBtn = '시작';
-                    //     leftBtn = '재설정';
-                    //
-                    //   }
-                    //}
+                    onPressed: isStarted ? _stop : _start,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 10),
-            const Divider(
-              color: Colors.white,
+
+            Expanded(
+              child: ListView.builder(
+                itemCount: _results.length,
+                itemBuilder: (context, index) {
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      children: [
+                       if(index==0)  const Divider(
+                          color: Colors.white,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '랩 ${index + 1}',
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 15),
+                            ),
+                            Text(
+                              _results[index],
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                        const Divider(
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-            const SizedBox(height: 200),
           ],
         ),
       ),
