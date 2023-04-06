@@ -68,7 +68,7 @@ class _StopWatchViewState extends State<StopWatchView> {
     setState(() {
       leftBtn = '랩';
       _result = '00:00:00';
-      _results=[];
+      _results = [];
     });
   }
 
@@ -135,40 +135,53 @@ class _StopWatchViewState extends State<StopWatchView> {
               ],
             ),
             const SizedBox(height: 10),
-
+            if (_results.isEmpty)
+              Column(
+                children: const [
+                  SizedBox(height: 60),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Divider(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             Expanded(
               child: ListView.builder(
                 itemCount: _results.length,
                 itemBuilder: (context, index) {
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      children: [
-                       if(index==0)  const Divider(
-                          color: Colors.white,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '랩 ${index + 1}',
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 15),
+                  if (_results.isNotEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Column(
+                        children: [
+                          if (index == 0)
+                            const Divider(
+                              color: Colors.white,
                             ),
-                            Text(
-                              _results[index],
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 15),
-                            ),
-                          ],
-                        ),
-                        const Divider(
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  );
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '랩 ${index + 1}',
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              ),
+                              Text(
+                                _results[index],
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              ),
+                            ],
+                          ),
+                          const Divider(
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 },
               ),
             ),
